@@ -38,6 +38,7 @@
 
 cl_enginefunc_t gEngfuncs;
 CHud gHUD;
+CWaterRenderer g_WaterRenderer;
 TeamFortressViewport* gViewPort = NULL;
 
 
@@ -184,6 +185,8 @@ int DLLEXPORT HUD_Redraw(float time, int intermission)
 {
 	//	RecClHudRedraw(time, intermission);
 
+	g_WaterRenderer.Draw();
+	g_WaterRenderer.AnimateWater();
 	gHUD.Redraw(time, 0 != intermission);
 
 	return 1;

@@ -371,6 +371,8 @@ void CHud::Init()
 
 	m_Menu.Init();
 
+	g_WaterRenderer.Init();
+
 	MsgFunc_ResetHUD(0, 0, NULL);
 }
 
@@ -513,6 +515,8 @@ void CHud::VidInit()
 	m_TextMessage.VidInit();
 	m_StatusIcons.VidInit();
 	GetClientVoiceMgr()->VidInit();
+
+	g_WaterRenderer.VidInit();
 }
 
 bool CHud::MsgFunc_Logo(const char* pszName, int iSize, void* pbuf)

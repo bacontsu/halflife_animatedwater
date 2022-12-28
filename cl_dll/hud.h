@@ -480,6 +480,20 @@ private:
 //-----------------------------------------------------
 //
 
+class CWaterRenderer
+{
+public:
+	int Init();
+	int VidInit();
+	int Draw();
+	void DrawQuad(int width, int height, int ofsX, int ofsY);
+	void AnimateWater();
+
+	void LoadWADFiles(void);
+	void FreeWADFiles(void);
+	void LoadWADTextures();
+};
+
 
 class CHud
 {
@@ -609,6 +623,7 @@ public:
 };
 
 extern CHud gHUD;
+extern CWaterRenderer g_WaterRenderer;
 
 extern int g_iPlayerClass;
 extern int g_iTeamNumber;
