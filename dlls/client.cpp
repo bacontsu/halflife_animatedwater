@@ -882,6 +882,12 @@ void ClientPrecache()
 
 	PRECACHE_MODEL("models/player.mdl");
 
+	PRECACHE_SOUND("ambience/splash_1.wav");
+	PRECACHE_SOUND("ambience/splash_2.wav");
+	PRECACHE_SOUND("ambience/splash_3.wav");
+	PRECACHE_MODEL("sprites/effects/splash1.spr");
+	PRECACHE_MODEL("sprites/effects/splash2.spr");
+
 	// hud sounds
 
 	PRECACHE_SOUND("common/wpn_hudoff.wav");

@@ -132,6 +132,19 @@ int __MsgFunc_GameMode(const char* pszName, int iSize, void* pbuf)
 	return static_cast<int>(gHUD.MsgFunc_GameMode(pszName, iSize, pbuf));
 }
 
+extern void EV_HLDM_WaterSplash(float x, float y, float z);
+int __MsgFunc_WaterSplash(const char* pszName, int iSize, void* pbuf)
+{
+	BEGIN_READ(pbuf, iSize);
+	float X, Y, Z;
+	X = READ_COORD();
+	Y = READ_COORD();
+	Z = READ_COORD();
+
+	EV_HLDM_WaterSplash(X, Y, Z);
+	return 1;
+}
+
 // TFFree Command Menu
 void __CmdFunc_OpenCommandMenu()
 {
@@ -290,6 +303,8 @@ void CHud::Init()
 	HOOK_MESSAGE(SetFOV);
 	HOOK_MESSAGE(Concuss);
 	HOOK_MESSAGE(Weapons);
+
+	HOOK_MESSAGE(WaterSplash); // water splash
 
 	// TFFree CommandMenu
 	HOOK_COMMAND("+commandmenu", OpenCommandMenu);

@@ -20,6 +20,9 @@
 
 #include "vgui_TeamFortressViewport.h"
 
+#include "PlatformHeaders.h"
+#include <gl/GL.h>
+
 #define MAX_LOGO_FRAMES 56
 
 int grgLogoFrame[MAX_LOGO_FRAMES] =
@@ -137,6 +140,9 @@ bool CHud::Redraw(float flTime, bool intermission)
 	// if no redrawing is necessary
 	// return 0;
 
+	// BlueNightHawk - This fixes the viewmodel drawing on top of the hud
+	glDepthRange(0.0f, 0.0f);
+
 	// draw all registered HUD elements
 	if (0 != m_pCvarDraw->value)
 	{
@@ -179,6 +185,8 @@ bool CHud::Redraw(float flTime, bool intermission)
 
 		SPR_DrawAdditive(i, x, y, NULL);
 	}
+
+	glDepthRange(0.0f, 1.0f);
 
 	/*
 	if ( g_iVisibleMouse )

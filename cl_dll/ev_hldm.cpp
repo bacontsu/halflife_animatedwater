@@ -52,6 +52,42 @@ void VectorAngles(const float* forward, float* angles);
 
 extern cvar_t* cl_lw;
 
+// water splash
+void EV_HLDM_WaterSplash(float x, float y, float z)
+{
+	int iWaterSplash = gEngfuncs.pEventAPI->EV_FindModelIndex("sprites/effects/splash1.spr");
+	TEMPENTITY* pTemp = gEngfuncs.pEfxAPI->R_TempSprite(Vector(x, y, z + 50),
+		Vector(0, 0, 0),
+		0.5, iWaterSplash, kRenderTransAdd, kRenderFxNone, 0.5, 0.5, FTENT_SPRANIMATE | FTENT_FADEOUT);
+
+	if (pTemp)
+	{
+		pTemp->fadeSpeed = 90.0;
+		pTemp->entity.curstate.framerate = 0.5 * 255;
+		pTemp->entity.curstate.renderamt = 155;
+		pTemp->entity.curstate.rendercolor.r = 255;
+		pTemp->entity.curstate.rendercolor.g = 255;
+		pTemp->entity.curstate.rendercolor.b = 255;
+	}
+
+	iWaterSplash = gEngfuncs.pEventAPI->EV_FindModelIndex("sprites/effects/splash2.spr");
+	pTemp = gEngfuncs.pEfxAPI->R_TempSprite(Vector(x, y, z + 1),
+		Vector(0, 0, 0),
+		0.4, iWaterSplash, kRenderTransAdd, kRenderFxNone, 0.5, 0.5, FTENT_SPRANIMATE | FTENT_FADEOUT);
+
+	if (pTemp)
+	{
+		pTemp->fadeSpeed = 90.0;
+		pTemp->entity.curstate.framerate = 40.0;
+		pTemp->entity.curstate.renderamt = 0.5 * 255;
+		pTemp->entity.curstate.rendercolor.r = 255;
+		pTemp->entity.curstate.rendercolor.g = 255;
+		pTemp->entity.curstate.rendercolor.b = 255;
+		pTemp->entity.angles[PITCH] = 90;
+		pTemp->entity.angles[YAW] = RANDOM_LONG(0, 360);
+	}
+}
+
 // play a strike sound based on the texture that was hit by the attack traceline.  VecSrc/VecEnd are the
 // original traceline endpoints used by the attacker, iBulletType is the type of bullet that hit the texture.
 // returns volume of strike instrument (crowbar) to play

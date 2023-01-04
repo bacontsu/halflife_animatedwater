@@ -514,7 +514,7 @@ CSound* CBaseMonster::PBestScent()
 void CBaseMonster::MonsterThink()
 {
 	pev->nextthink = gpGlobals->time + 0.1; // keep monster thinking.
-
+	
 
 	RunAI();
 
