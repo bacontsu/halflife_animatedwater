@@ -563,6 +563,9 @@ void CWaterRenderer::AnimateWater()
 	glBegin(GL_QUADS);
 	DrawQuad(ScreenWidth, ScreenHeight, 0, 0);
 	glEnd();
+	glBegin(GL_QUADS);
+	DrawQuad(ScreenWidth, ScreenHeight, 0, 0);
+	glEnd();
 
 	// reset state
 	glMatrixMode(GL_PROJECTION);

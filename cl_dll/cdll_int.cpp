@@ -35,6 +35,8 @@
 #include "tri.h"
 #include "vgui_TeamFortressViewport.h"
 #include "filesystem_utils.h"
+#include "minhook/MinHook.h"
+extern void HWHook();
 
 cl_enginefunc_t gEngfuncs;
 CHud gHUD;
@@ -122,6 +124,7 @@ int DLLEXPORT Initialize(cl_enginefunc_t* pEnginefuncs, int iVersion)
 
 	EV_HookEvents();
 	CL_LoadParticleMan();
+	MH_Initialize();
 
 	if (!FileSystem_LoadFileSystem())
 	{
@@ -169,6 +172,7 @@ void DLLEXPORT HUD_Init()
 	InitInput();
 	gHUD.Init();
 	Scheme_Init();
+	HWHook();
 }
 
 
