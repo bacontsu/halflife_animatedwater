@@ -21,7 +21,7 @@ void EmitWaterPolys(msurface_t* fa, int direction);
 
 void EmitWaterPolys(msurface_t* fa, int direction)
 {
-	return ORIG_EmitWaterPolys(fa, direction);
+	//return ORIG_EmitWaterPolys(fa, direction);
 	
 	// idk why it doesnt work now
 	glpoly_t* p;
@@ -48,6 +48,14 @@ void EmitWaterPolys(msurface_t* fa, int direction)
 			tempVert[1] = v[1];
 			tempVert[2] = v[2];
 			tempVert[2] += s;
+
+			//gEngfuncs.Con_Printf("os:%f ot:%f", os, ot);
+
+			s = os;
+			s *= (1.0f / 64);
+
+			t = ot;
+			t *= (1.0f / 64);
 
 			glTexCoord2f(s, t);
 			glVertex3fv(tempVert);
