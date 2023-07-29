@@ -9,7 +9,7 @@ class ShaderUtil
 private: 
 	unsigned int mProgramId;
 
-	unsigned int GetCompiledShader(unsigned int shader_type, const std::string& shader_source);
+	unsigned int GetCompiledShader(unsigned int shader_type, const std::string& shader_source, const std::string& path);
 
 public:
 	ShaderUtil() {}

@@ -171,7 +171,7 @@ int CWaterRenderer::Init()
 	else
 	{
 		gEngfuncs.Con_DPrintf("[GLEW] Initialize success!\n");
-		shaderUtil.Load(std::string(gEngfuncs.pfnGetGameDirectory() + (std::string) "/shaders/vs.shader"), std::string(gEngfuncs.pfnGetGameDirectory() + (std::string) "/shaders/fs.shader"));
+		shaderUtil.Load(std::string(gEngfuncs.pfnGetGameDirectory() + (std::string) "/shaders/vs.shaders"), std::string(gEngfuncs.pfnGetGameDirectory() + (std::string) "/shaders/fs.shaders"));
 	}
 
 	return 1;
