@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 
 
 unsigned int ShaderUtil::GetCompiledShader(unsigned int shader_type, const std::string& shader_source, const std::string& path)
@@ -43,6 +44,23 @@ bool ShaderUtil::Load(const std::string& vertexShaderFile, const std::string& fr
 
 	std::ifstream is_fs(fragmentShaderFile);
 	const std::string f_fs((std::istreambuf_iterator<char>(is_fs)), std::istreambuf_iterator<char>());
+
+	bool failToLoad = false;
+	if (!std::filesystem::exists(vertexShaderFile))
+	{
+		gEngfuncs.Con_DPrintf("[GLEW] Cannot find %s shader!\n", vertexShaderFile.c_str());
+		failToLoad = true;
+	}
+	if (!std::filesystem::exists(fragmentShaderFile))
+	{
+		gEngfuncs.Con_DPrintf("[GLEW] Cannot find %s shader!\n", fragmentShaderFile.c_str());
+		failToLoad = true;
+	}
+	if (failToLoad)
+	{
+		return false;
+	}
+
 
 	mProgramId = glCreateProgram();
 

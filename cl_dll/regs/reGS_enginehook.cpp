@@ -47,7 +47,7 @@ void EmitWaterPolys(msurface_t* fa, int direction)
 			tempVert[0] = v[0];
 			tempVert[1] = v[1];
 			tempVert[2] = v[2];
-			tempVert[2] += s;
+			//tempVert[2] += s;
 
 			//gEngfuncs.Con_Printf("os:%f ot:%f", os, ot);
 

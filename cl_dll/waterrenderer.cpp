@@ -510,8 +510,6 @@ void CWaterRenderer::AnimateWater()
 			glBindTexture(GL_TEXTURE_RECTANGLE_NV, waterBuffer[i].default_tex);
 			glColor4f(1, 1, 1, 1);
 
-			shaderUtil.Use();
-
 			// ===== this layer stays still =====
 			glBegin(GL_QUADS);
 			glTexCoord2f(waterBuffer[i].tex_width, 0);
@@ -524,9 +522,6 @@ void CWaterRenderer::AnimateWater()
 			glVertex3f(1, 1, -1);
 			glEnd();
 
-			glUseProgram(0);
-
-			/*
 			// ===== this layer scrolls horizontally =====
 			glPushMatrix();
 			glColor4f(1, 1, 1, 0.5f);
@@ -574,7 +569,6 @@ void CWaterRenderer::AnimateWater()
 			glVertex3f(1, 1, -1);
 			glEnd();
 			glPopMatrix();
-			*/
 			
 			// update water texture
 			glBindTexture(GL_TEXTURE_2D, waterBuffer[i].pointer->gl_texturenum);
@@ -586,12 +580,12 @@ void CWaterRenderer::AnimateWater()
 	glBindTexture(GL_TEXTURE_RECTANGLE_NV, screenHandler);
 	glColor4f(1, 1, 1, 1);
 
-	//glBegin(GL_QUADS);
-	//DrawQuad(ScreenWidth, ScreenHeight, 0, 0);
-	//glEnd();
-	//glBegin(GL_QUADS);
-	//DrawQuad(ScreenWidth, ScreenHeight, 0, 0);
-	//glEnd();
+	glBegin(GL_QUADS);
+	DrawQuad(ScreenWidth, ScreenHeight, 0, 0);
+	glEnd();
+	glBegin(GL_QUADS);
+	DrawQuad(ScreenWidth, ScreenHeight, 0, 0);
+	glEnd();
 
 	// reset state
 	glMatrixMode(GL_PROJECTION);
