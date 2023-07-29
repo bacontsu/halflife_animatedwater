@@ -24,7 +24,8 @@ public:
 	// Delete the program
 	void Delete();
 
-
+	// Give the programID
+	unsigned int GetProgramID() { return mProgramId; }
 
 };
 
