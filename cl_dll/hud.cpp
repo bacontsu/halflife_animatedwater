@@ -386,8 +386,6 @@ void CHud::Init()
 
 	m_Menu.Init();
 
-	g_WaterRenderer.Init();
-
 	MsgFunc_ResetHUD(0, 0, NULL);
 }
 

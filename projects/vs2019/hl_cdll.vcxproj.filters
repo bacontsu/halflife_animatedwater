@@ -73,6 +73,12 @@
     <Filter Include="Source Files\regs">
       <UniqueIdentifier>{d1027b04-1d01-462a-b399-f9ecb30d875c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\ShaderUtil">
+      <UniqueIdentifier>{81d9402d-2ad7-4184-a335-dbfab8f18330}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\glew">
+      <UniqueIdentifier>{3cc98e73-471d-4643-b140-72befa5becb6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\dlls\crossbow.cpp">
@@ -353,6 +359,12 @@
     </ClCompile>
     <ClCompile Include="..\..\cl_dll\regs\reGS_enginehook.cpp">
       <Filter>Source Files\regs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\external\ShaderUtil\ShaderUtil.cpp">
+      <Filter>Source Files\ShaderUtil</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\external\GL\glew.c">
+      <Filter>Source Files\glew</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -676,6 +688,21 @@
     </ClInclude>
     <ClInclude Include="..\..\cl_dll\regs\reGS_patterns.hpp">
       <Filter>Source Files\regs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\ShaderUtil\ShaderUtil.h">
+      <Filter>Source Files\ShaderUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\GL\eglew.h">
+      <Filter>Source Files\glew</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\GL\glew.h">
+      <Filter>Source Files\glew</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\GL\glxew.h">
+      <Filter>Source Files\glew</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\GL\wglew.h">
+      <Filter>Source Files\glew</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

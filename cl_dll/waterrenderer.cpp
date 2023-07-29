@@ -30,9 +30,12 @@
 #include <string.h>
 #include "cl_entity.h"
 #include "com_model.h"
+
 #include "PlatformHeaders.h"
 #include "SDL2/SDL.h"
+#include <GL/glew.h>
 #include <gl/GL.h>
+#include "ShaderUtil/ShaderUtil.h"
 
 
 #ifndef GL_TEXTURE_RECTANGLE_NV
@@ -132,6 +135,8 @@ std::vector<cl_texture_t> waterTextures;
 int stage = 0;
 float nextFrame = 0;
 GLuint screenHandler;
+GLenum glew;
+ShaderUtil shaderUtil;
 
 int CWaterRenderer::Init()
 {
@@ -155,6 +160,19 @@ int CWaterRenderer::Init()
 	FreeWADFiles();
 
 	m_pCvarDrawAnimatedWater = CVAR_CREATE("r_animate_water", "1", FCVAR_ARCHIVE);
+
+	glew = glewInit();
+	if (GLEW_OK != glew)
+	{
+		/* Problem: glewInit failed, something is seriously wrong. */
+		// fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+		gEngfuncs.Con_DPrintf("[GLEW] Error: %s\n", glewGetErrorString(glew));
+	}
+	else
+	{
+		gEngfuncs.Con_DPrintf("[GLEW] Initialize success!\n");
+		shaderUtil.Load(std::string(gEngfuncs.pfnGetGameDirectory() + (std::string) "/shaders/vs.shader"), std::string(gEngfuncs.pfnGetGameDirectory() + (std::string) "/shaders/fs.shader"));
+	}
 
 	return 1;
 }
@@ -492,6 +510,8 @@ void CWaterRenderer::AnimateWater()
 			glBindTexture(GL_TEXTURE_RECTANGLE_NV, waterBuffer[i].default_tex);
 			glColor4f(1, 1, 1, 1);
 
+			shaderUtil.Use();
+
 			// ===== this layer stays still =====
 			glBegin(GL_QUADS);
 			glTexCoord2f(waterBuffer[i].tex_width, 0);
@@ -504,6 +524,9 @@ void CWaterRenderer::AnimateWater()
 			glVertex3f(1, 1, -1);
 			glEnd();
 
+			glUseProgram(0);
+
+			/*
 			// ===== this layer scrolls horizontally =====
 			glPushMatrix();
 			glColor4f(1, 1, 1, 0.5f);
@@ -551,6 +574,8 @@ void CWaterRenderer::AnimateWater()
 			glVertex3f(1, 1, -1);
 			glEnd();
 			glPopMatrix();
+			*/
+			
 			// update water texture
 			glBindTexture(GL_TEXTURE_2D, waterBuffer[i].pointer->gl_texturenum);
 			glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 0, 0, waterBuffer[i].tex_width, waterBuffer[i].tex_height, 0);
@@ -560,12 +585,13 @@ void CWaterRenderer::AnimateWater()
 	glViewport(0, 0, ScreenWidth, ScreenHeight);
 	glBindTexture(GL_TEXTURE_RECTANGLE_NV, screenHandler);
 	glColor4f(1, 1, 1, 1);
-	glBegin(GL_QUADS);
-	DrawQuad(ScreenWidth, ScreenHeight, 0, 0);
-	glEnd();
-	glBegin(GL_QUADS);
-	DrawQuad(ScreenWidth, ScreenHeight, 0, 0);
-	glEnd();
+
+	//glBegin(GL_QUADS);
+	//DrawQuad(ScreenWidth, ScreenHeight, 0, 0);
+	//glEnd();
+	//glBegin(GL_QUADS);
+	//DrawQuad(ScreenWidth, ScreenHeight, 0, 0);
+	//glEnd();
 
 	// reset state
 	glMatrixMode(GL_PROJECTION);

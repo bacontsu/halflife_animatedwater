@@ -173,6 +173,7 @@ void DLLEXPORT HUD_Init()
 	gHUD.Init();
 	Scheme_Init();
 	HWHook();
+	g_WaterRenderer.Init();
 }
 
 
