@@ -29,6 +29,7 @@
 #include "common_types.h"
 #include "cl_dll.h"
 #include "ammo.h"
+#include "com_model.h"
 
 #define DHN_DRAWZERO 1
 #define DHN_2DIGITS 2
@@ -492,6 +493,11 @@ public:
 	void LoadWADFiles(void);
 	void FreeWADFiles(void);
 	void LoadWADTextures();
+
+	void EnableShader(msurface_t* fa);
+	void DisableShader();
+	void CaptureWater();
+	unsigned int GetWaterTexture();
 };
 
 

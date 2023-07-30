@@ -135,6 +135,7 @@ std::vector<cl_texture_t> waterTextures;
 int stage = 0;
 float nextFrame = 0;
 GLuint screenHandler;
+GLuint globalWaterTex;
 GLenum glew;
 ShaderUtil shaderUtil;
 
@@ -151,6 +152,16 @@ int CWaterRenderer::Init()
 	glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexImage2D(GL_TEXTURE_RECTANGLE_NV, 0, GL_RGB8, ScreenWidth, ScreenHeight, 0, GL_RGB8, GL_UNSIGNED_BYTE, pBlankTex);
+
+	pBlankTex = new unsigned char[128 * 128 * 3];
+	memset(pBlankTex, 0, 128 * 128 * 3);
+
+	// Create the SCREEN-HOLDING TEXTURE
+	glGenTextures(1, &globalWaterTex);
+	glBindTexture(GL_TEXTURE_2D, globalWaterTex);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 128, 128, 0, GL_RGB8, GL_UNSIGNED_BYTE, pBlankTex);
 
 	// free the memory
 	delete[] pBlankTex;
@@ -465,6 +476,81 @@ void CWaterRenderer::DrawQuad(int width, int height, int ofsX, int ofsY)
 	glVertex3f(1, 1, -1);
 }
 
+void CWaterRenderer::EnableShader(msurface_t* fa)
+{
+	glPushAttrib(GL_TEXTURE_BIT);
+	glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
+
+	glUseProgram(shaderUtil.GetProgramID());
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, fa->texinfo->texture->gl_texturenum);
+	glUniform1f(glGetUniformLocation(shaderUtil.GetProgramID(), "iTime"), gEngfuncs.GetAbsoluteTime());
+}
+
+void CWaterRenderer::DisableShader()
+{
+	// re-disable everything
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glUseProgram(0);
+	glPopAttrib();
+	glPopClientAttrib();
+	glActiveTexture(GL_TEXTURE1);
+	glDisable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE0);
+}
+
+void CWaterRenderer::CaptureWater()
+{
+	// enable some OpenGL stuff
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
+
+	glEnable(GL_TEXTURE_RECTANGLE_NV);
+	glColor3f(1, 1, 1);
+	glDisable(GL_DEPTH_TEST);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	glOrtho(0, 1, 1, 0, 0.1, 100);
+
+	// save screen
+	glBindTexture(GL_TEXTURE_RECTANGLE_NV, screenHandler);
+	glCopyTexImage2D(GL_TEXTURE_RECTANGLE_NV, 0, GL_RGBA8, 0, 0, ScreenWidth, ScreenHeight, 0);
+
+	// update water texture
+	glBindTexture(GL_TEXTURE_2D, globalWaterTex);
+	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 0, 0, 128, 128, 0);
+
+	// restore screen content
+	glViewport(0, 0, ScreenWidth, ScreenHeight);
+	glBindTexture(GL_TEXTURE_RECTANGLE_NV, screenHandler);
+	glColor4f(1, 1, 1, 1);
+
+	glBegin(GL_QUADS);
+	DrawQuad(ScreenWidth, ScreenHeight, 0, 0);
+	glEnd();
+	glBegin(GL_QUADS);
+	DrawQuad(ScreenWidth, ScreenHeight, 0, 0);
+	glEnd();
+
+	// reset state
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	glDisable(GL_TEXTURE_RECTANGLE_NV);
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+}
+
+unsigned int CWaterRenderer::GetWaterTexture()
+{
+	return globalWaterTex;
+}
+
 void CWaterRenderer::AnimateWater()
 {
 	if (m_pCvarDrawAnimatedWater->value <= 0)
@@ -472,6 +558,8 @@ void CWaterRenderer::AnimateWater()
 
 	if (stage != 2)
 		return;
+
+	return;
 
 	// enable some OpenGL stuff
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -506,10 +594,26 @@ void CWaterRenderer::AnimateWater()
 	{
 		if (waterBuffer[i].default_tex != 0)
 		{
+			glPushAttrib(GL_TEXTURE_BIT);
+			glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
+
 			glViewport(0, 0, waterBuffer[i].tex_width, waterBuffer[i].tex_height);
+
+			glUseProgram(shaderUtil.GetProgramID());
+
+			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_RECTANGLE_NV, waterBuffer[i].default_tex);
 			glColor4f(1, 1, 1, 1);
 
+
+
+			// re-disable everything
+			glBindTexture(GL_TEXTURE_RECTANGLE_NV, 0);
+			glUseProgram(0);
+			glPopAttrib();
+			glPopClientAttrib();
+
+			/*
 			// ===== this layer stays still =====
 			glBegin(GL_QUADS);
 			glTexCoord2f(waterBuffer[i].tex_width, 0);
@@ -569,6 +673,8 @@ void CWaterRenderer::AnimateWater()
 			glVertex3f(1, 1, -1);
 			glEnd();
 			glPopMatrix();
+
+			*/
 			
 			// update water texture
 			glBindTexture(GL_TEXTURE_2D, waterBuffer[i].pointer->gl_texturenum);
@@ -580,12 +686,12 @@ void CWaterRenderer::AnimateWater()
 	glBindTexture(GL_TEXTURE_RECTANGLE_NV, screenHandler);
 	glColor4f(1, 1, 1, 1);
 
-	glBegin(GL_QUADS);
-	DrawQuad(ScreenWidth, ScreenHeight, 0, 0);
-	glEnd();
-	glBegin(GL_QUADS);
-	DrawQuad(ScreenWidth, ScreenHeight, 0, 0);
-	glEnd();
+	//glBegin(GL_QUADS);
+	//DrawQuad(ScreenWidth, ScreenHeight, 0, 0);
+	//glEnd();
+	//glBegin(GL_QUADS);
+	//DrawQuad(ScreenWidth, ScreenHeight, 0, 0);
+	//glEnd();
 
 	// reset state
 	glMatrixMode(GL_PROJECTION);
